@@ -478,7 +478,10 @@ function renderOptions(messageId, options) {
 
     for (const option of options) {
         const escapedOption = option.replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        html += `<div class="cyoa-option-row">`;
         html += `<button class="cyoa-option" data-option="${escapedOption}">${escapedOption}</button>`;
+        html += `<button class="cyoa-edit-btn" data-option="${escapedOption}" title="Edit before sending"><i class="fa-solid fa-pen"></i></button>`;
+        html += `</div>`;
     }
 
     html += '</div>';
@@ -540,6 +543,15 @@ jQuery(async function () {
 
     // Bind click handler for CYOA options
     $(document).on('click', '.cyoa-option', onOptionClick);
+
+    // Bind click handler for edit buttons - puts text in chat input
+    $(document).on('click', '.cyoa-edit-btn', function(event) {
+        const optionText = $(event.currentTarget).data('option');
+        if (optionText) {
+            $('#send_textarea').val(optionText).trigger('input');
+            $('#send_textarea').focus();
+        }
+    });
 
     // Listen for character message rendered events
     eventSource.on(event_types.CHARACTER_MESSAGE_RENDERED, onCharacterMessageRendered);

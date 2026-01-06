@@ -9,18 +9,39 @@
     border-top: 1px solid var(--SmartThemeBorderColor);
 }
 
-.cyoa-option {
+.cyoa-option-row {
+    display: flex;
     flex: 1 1 calc(50% - 8px);
     min-width: 200px;
+    gap: 4px;
+}
+
+.cyoa-option {
+    flex: 1;
     padding: 10px 15px;
     background-color: var(--SmartThemeBlurTintColor);
     border: 1px solid var(--SmartThemeBorderColor);
-    border-radius: 5px;
+    border-radius: 5px 0 0 5px;
     color: var(--SmartThemeBodyColor);
     cursor: pointer;
     text-align: left;
     font-size: 0.95em;
     transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.cyoa-edit-btn {
+    padding: 10px 12px;
+    background-color: var(--SmartThemeBlurTintColor);
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-left: none;
+    border-radius: 0 5px 5px 0;
+    color: var(--SmartThemeBodyColor);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.cyoa-edit-btn:hover {
+    background-color: var(--SmartThemeQuoteColor);
 }
 
 .cyoa-option:hover {
