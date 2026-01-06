@@ -1,0 +1,105 @@
+<div id="cyoa_settings">
+    <div class="inline-drawer">
+        <div class="inline-drawer-toggle inline-drawer-header">
+            <b>CYOA</b>
+            <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
+        </div>
+        <div class="inline-drawer-content">
+            <div class="cyoa_block">
+                <label class="checkbox_label" for="cyoa_enabled">
+                    <input type="checkbox" id="cyoa_enabled" name="cyoa_enabled">
+                    <small>Enabled</small>
+                </label>
+            </div>
+
+            <hr>
+
+            <div class="cyoa_block">
+                <label for="cyoa_api_endpoint">
+                    <small>API Endpoint URL</small>
+                </label>
+                <input type="text" id="cyoa_api_endpoint" class="text_pole wide100p" placeholder="https://api.openai.com/v1">
+            </div>
+
+            <div class="cyoa_block">
+                <label for="cyoa_api_key">
+                    <small>API Key</small>
+                </label>
+                <input type="password" id="cyoa_api_key" class="text_pole wide100p" placeholder="sk-...">
+            </div>
+
+            <div class="cyoa_block">
+                <label for="cyoa_model">
+                    <small>Model</small>
+                </label>
+                <input type="text" id="cyoa_model" class="text_pole wide100p" placeholder="gpt-4o-mini">
+            </div>
+
+            <hr>
+
+            <div class="cyoa_block">
+                <label for="cyoa_num_options">
+                    <small>Number of Options</small>
+                </label>
+                <input type="number" id="cyoa_num_options" class="text_pole wide100p" min="1" max="10" value="3">
+            </div>
+
+            <div class="cyoa_block">
+                <label for="cyoa_context_length">
+                    <small>Context Messages</small>
+                </label>
+                <input type="number" id="cyoa_context_length" class="text_pole wide100p" min="1" max="50" value="10">
+            </div>
+
+            <div class="cyoa_block">
+                <label for="cyoa_max_tokens">
+                    <small>Max Tokens</small>
+                </label>
+                <input type="number" id="cyoa_max_tokens" class="text_pole wide100p" min="1" value="500">
+            </div>
+
+            <hr>
+
+            <div class="cyoa_block">
+                <label class="checkbox_label" for="cyoa_use_preset">
+                    <input type="checkbox" id="cyoa_use_preset">
+                    <small>Use Preset (Jailbreak)</small>
+                </label>
+            </div>
+
+            <div class="cyoa_block">
+                <small>Preset File</small>
+                <div class="cyoa_preset_row">
+                    <span id="cyoa_preset_info"><span class="cyoa-preset-none">No preset loaded</span></span>
+                    <input type="file" id="cyoa_preset_file" accept=".json" style="display: none;">
+                    <button id="cyoa_preset_upload_btn" class="menu_button">Upload</button>
+                    <button id="cyoa_preset_clear_btn" class="menu_button" style="display: none;">Clear</button>
+                </div>
+            </div>
+
+            <div class="cyoa_block">
+                <label for="cyoa_post_processing">
+                    <small>Post-Processing</small>
+                </label>
+                <select id="cyoa_post_processing" class="text_pole wide100p">
+                    <option value="none">None</option>
+                    <option value="semi-strict">Semi-Strict (all system → user)</option>
+                    <option value="strict">Strict (keep first system only)</option>
+                </select>
+            </div>
+
+            <hr>
+
+            <div class="cyoa_block">
+                <label for="cyoa_system_prompt">
+                    <small>System Prompt</small>
+                </label>
+                <textarea id="cyoa_system_prompt" class="text_pole wide100p" rows="6" placeholder="Enter custom system prompt..."></textarea>
+            </div>
+
+            <div class="cyoa_block">
+                <small class="hint">Use {n} for number of options, {char} for character name, {user} for user name</small>
+            </div>
+        </div>
+    </div>
+</div>

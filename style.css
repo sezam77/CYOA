@@ -1,0 +1,113 @@
+/* CYOA Extension Styles */
+
+.cyoa-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 10px;
+    border-top: 1px solid var(--SmartThemeBorderColor);
+}
+
+.cyoa-option {
+    flex: 1 1 calc(50% - 8px);
+    min-width: 200px;
+    padding: 10px 15px;
+    background-color: var(--SmartThemeBlurTintColor);
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 5px;
+    color: var(--SmartThemeBodyColor);
+    cursor: pointer;
+    text-align: left;
+    font-size: 0.95em;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.cyoa-option:hover {
+    background-color: var(--SmartThemeQuoteColor);
+    border-color: var(--SmartThemeQuoteColor);
+}
+
+.cyoa-option:active {
+    transform: scale(0.98);
+}
+
+.cyoa-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    color: var(--SmartThemeBodyColor);
+    opacity: 0.7;
+}
+
+.cyoa-loading::after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
+    border: 2px solid var(--SmartThemeBodyColor);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: cyoa-spin 1s linear infinite;
+}
+
+@keyframes cyoa-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.cyoa-error {
+    padding: 10px;
+    color: var(--warning-color, #ff6b6b);
+    font-size: 0.9em;
+    text-align: center;
+}
+
+/* Settings styles */
+#cyoa_settings .cyoa_block {
+    margin-bottom: 10px;
+}
+
+#cyoa_settings .hint {
+    color: var(--SmartThemeBodyColor);
+    opacity: 0.6;
+    font-style: italic;
+}
+
+#cyoa_settings hr {
+    margin: 15px 0;
+    border: none;
+    border-top: 1px solid var(--SmartThemeBorderColor);
+}
+
+#cyoa_settings textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Preset styles */
+.cyoa_preset_row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+#cyoa_preset_info {
+    flex: 1;
+}
+
+.cyoa-preset-loaded {
+    color: var(--success-color, #4caf50);
+}
+
+.cyoa-preset-loaded i {
+    margin-right: 5px;
+}
+
+.cyoa-preset-none {
+    color: var(--SmartThemeBodyColor);
+    opacity: 0.6;
+}
