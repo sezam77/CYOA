@@ -418,11 +418,19 @@ async function generateCYOAOptions(messageId) {
         let options;
         try {
             // Try to extract JSON array from the response
-            const jsonMatch = content.match(/\[[\s\S]*\]/);
+            let jsonMatch = content.match(/\[[\s\S]*\]/);
             if (jsonMatch) {
                 options = JSON.parse(jsonMatch[0]);
             } else {
-                throw new Error('No JSON array found in response');
+                // Some models return {""} instead of [""], try to fix it
+                const curlyMatch = content.match(/\{[\s\S]*\}/);
+                if (curlyMatch) {
+                    // Replace outer braces with brackets
+                    const fixed = '[' + curlyMatch[0].slice(1, -1) + ']';
+                    options = JSON.parse(fixed);
+                } else {
+                    throw new Error('No JSON array found in response');
+                }
             }
         } catch (parseError) {
             console.error('[CYOA] Failed to parse options:', content);
