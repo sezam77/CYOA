@@ -132,3 +132,13 @@
     color: var(--SmartThemeBodyColor);
     opacity: 0.6;
 }
+
+/* Code-like textbox for preserved tags */
+.cyoa-code-textbox {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    white-space: pre;
+    overflow-x: auto;
+    overflow-y: auto;
+    word-wrap: normal;
+    word-break: normal;
+}

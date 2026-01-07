@@ -16,6 +16,7 @@ const defaultSettings = {
     usePreset: false,
     uploadedPreset: null,
     postProcessing: 'none',
+    preservedTags: '',
     systemPrompt: `You are a CYOA (Choose Your Own Adventure) option generator. Based on the conversation context provided, generate exactly {n} distinct action options that {user} could take next.
 
 Each option should be:
@@ -47,6 +48,7 @@ function loadSettings() {
     $('#cyoa_max_tokens').val(extension_settings.cyoa.maxTokens);
     $('#cyoa_use_preset').prop('checked', extension_settings.cyoa.usePreset);
     $('#cyoa_post_processing').val(extension_settings.cyoa.postProcessing);
+    $('#cyoa_preserved_tags').val(extension_settings.cyoa.preservedTags);
     $('#cyoa_system_prompt').val(extension_settings.cyoa.systemPrompt);
     updatePresetUI(extension_settings.cyoa.uploadedPreset);
 }
@@ -61,6 +63,7 @@ function saveSettings() {
     extension_settings.cyoa.maxTokens = parseInt($('#cyoa_max_tokens').val());
     extension_settings.cyoa.usePreset = $('#cyoa_use_preset').prop('checked');
     extension_settings.cyoa.postProcessing = $('#cyoa_post_processing').val();
+    extension_settings.cyoa.preservedTags = $('#cyoa_preserved_tags').val();
     extension_settings.cyoa.systemPrompt = $('#cyoa_system_prompt').val();
     saveSettingsDebounced();
 }
@@ -254,16 +257,56 @@ function getUserPersonaData() {
 function cleanMessageText(text) {
     if (!text) return '';
 
-    let cleaned = text;
+    // Get preserved tags from settings
+    const preservedTagsStr = extension_settings.cyoa.preservedTags || '';
+    const preservedTags = preservedTagsStr
+        .split(/[,\s]+/)
+        .map(tag => tag.trim().toLowerCase())
+        .filter(tag => tag.length > 0);
 
-    // Remove ALL content between any XML/HTML tags <tag>...</tag> (handles newlines)
-    cleaned = cleaned.replace(/<(\w+)[^>]*>[\s\S]*?<\/\1>/gi, '');
+    function processContent(content) {
+        let result = content;
 
-    // Remove any remaining unclosed tags and their content to end
-    cleaned = cleaned.replace(/<\w+[^>]*>[\s\S]*/gi, '');
+        // Process tags from innermost to outermost by repeatedly applying until no changes
+        let changed = true;
+        while (changed) {
+            const before = result;
 
-    // Remove any standalone tags
-    cleaned = cleaned.replace(/<[^>]+>/g, '');
+            // Match innermost tags first (tags that don't contain other tags of the same name)
+            result = result.replace(/<(\w+)([^>]*)>((?:(?!<\1[\s>])[\s\S])*?)<\/\1>/gi, (match, tagName, attrs, innerContent) => {
+                const tagLower = tagName.toLowerCase();
+                if (preservedTags.includes(tagLower)) {
+                    // Preserve this tag, but process inner content recursively
+                    const processedInner = processContent(innerContent);
+                    return `<${tagName}${attrs}>${processedInner}</${tagName}>`;
+                }
+                // Remove this tag and its content entirely
+                return '';
+            });
+
+            changed = (before !== result);
+        }
+
+        // Remove any remaining unclosed tags and their content to end (non-preserved only)
+        result = result.replace(/<(\w+)[^>]*>[\s\S]*/gi, (match, tagName) => {
+            if (preservedTags.includes(tagName.toLowerCase())) {
+                return match;
+            }
+            return '';
+        });
+
+        // Remove any standalone tags (but preserve specified ones)
+        result = result.replace(/<\/?(\w+)[^>]*>/g, (match, tagName) => {
+            if (preservedTags.includes(tagName.toLowerCase())) {
+                return match;
+            }
+            return '';
+        });
+
+        return result;
+    }
+
+    let cleaned = processContent(text);
 
     // Remove codeblocks ```...```
     cleaned = cleaned.replace(/```[\s\S]*?```/g, '');
@@ -533,6 +576,7 @@ jQuery(async function () {
     $('#cyoa_max_tokens').on('input', saveSettings);
     $('#cyoa_use_preset').on('change', saveSettings);
     $('#cyoa_post_processing').on('change', saveSettings);
+    $('#cyoa_preserved_tags').on('input', saveSettings);
 
     $('#cyoa_system_prompt').on('input', saveSettings);
 
