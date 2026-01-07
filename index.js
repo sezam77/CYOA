@@ -605,5 +605,10 @@ jQuery(async function () {
         $('.cyoa-container').remove();
     });
 
+    // Remove CYOA options when user swipes to a different message
+    eventSource.on(event_types.MESSAGE_SWIPED, () => {
+        $('.cyoa-container').remove();
+    });
+
     console.log('[CYOA] Extension loaded');
 });
