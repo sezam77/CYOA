@@ -465,12 +465,16 @@ async function generateCYOAOptions(messageId) {
             if (jsonMatch) {
                 options = JSON.parse(jsonMatch[0]);
             } else {
-                // Some models return {""} instead of [""], try to fix it
+                // Some models return {} instead of [], try to fix it
                 const curlyMatch = content.match(/\{[\s\S]*\}/);
                 if (curlyMatch) {
-                    // Replace outer braces with brackets
-                    const fixed = '[' + curlyMatch[0].slice(1, -1) + ']';
-                    options = JSON.parse(fixed);
+                    const parsed = JSON.parse(curlyMatch[0]);
+                    // Handle numbered key objects like {"1": "opt1", "2": "opt2"}
+                    if (typeof parsed === 'object' && !Array.isArray(parsed)) {
+                        options = Object.values(parsed);
+                    } else {
+                        options = parsed;
+                    }
                 } else {
                     throw new Error('No JSON array found in response');
                 }
