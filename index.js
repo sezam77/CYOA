@@ -468,12 +468,18 @@ async function generateCYOAOptions(messageId) {
                 // Some models return {} instead of [], try to fix it
                 const curlyMatch = content.match(/\{[\s\S]*\}/);
                 if (curlyMatch) {
-                    const parsed = JSON.parse(curlyMatch[0]);
-                    // Handle numbered key objects like {"1": "opt1", "2": "opt2"}
-                    if (typeof parsed === 'object' && !Array.isArray(parsed)) {
-                        options = Object.values(parsed);
-                    } else {
-                        options = parsed;
+                    try {
+                        // Try parsing as valid JSON object first (e.g., {"1": "opt1", "2": "opt2"})
+                        const parsed = JSON.parse(curlyMatch[0]);
+                        if (typeof parsed === 'object' && !Array.isArray(parsed)) {
+                            options = Object.values(parsed);
+                        } else {
+                            options = parsed;
+                        }
+                    } catch {
+                        // Not valid JSON, try replacing braces with brackets (e.g., {"opt1", "opt2"} -> ["opt1", "opt2"])
+                        const fixed = '[' + curlyMatch[0].slice(1, -1) + ']';
+                        options = JSON.parse(fixed);
                     }
                 } else {
                     throw new Error('No JSON array found in response');
